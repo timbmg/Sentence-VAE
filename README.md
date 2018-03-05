@@ -18,7 +18,7 @@ _Note: This implementation does not support LSTM's at the moment, but RNN's and 
 Training was stopped after 4 epochs. The true ELBO was optimized for approximately 1 epoch (as can bee see in the graph above). Results are averaged over entire split.
 
 | Split       | NLL   | KL    |
-| ------------|------:| -----:|
+|:------------|:------:|:-----:|
 | Train       | 99.821 | 7.944 |
 | Validation  | 103.220 | 7.346 |
 | Test        | 103.967 | 7.269 |
