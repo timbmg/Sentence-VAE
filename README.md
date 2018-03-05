@@ -25,8 +25,25 @@ Training was stopped after 4 epochs. The true ELBO was optimized for approximati
 ### Samples
 Sentenes have been obtained after sampling from z ~ N(0, I).  
 
+_mr . n who was n't n with his own staff and the n n n n n_  
+_in the n of the n of the u . s . companies are n't likely to be reached for comment_  
+_when they were n in the n and then they were n a n n_  
+_but the company said it will be n by the end of the n n and n n_  
+_but the company said that it will be n n of the u . s . economy_  
+
 ### Interpolating Sentences
 Sentenes have been obtained after sampling twice from z ~ N(0, I) and the interpolating the two samples.
+
+**the company said it will be n with the exception of the company**  
+_but the company said it will be n with the exception of the company ' s shares outstanding_  
+_but the company said that the company ' s n n and n n_  
+_but the company ' s n n in the past two years ago_  
+_but the company ' s n n in the past two years ago_  
+_but in the past few years ago that the company ' s n n_  
+_but in the past few years ago that they were n't disclosed_  
+_but in the past few years ago that they were n't disclosed_  
+_but in a statement that they were n't aware of the $ n million in the past few weeks_  
+**but in a statement that they were n't paid by the end of the past few weeks**  
 
 ## Training
 To run the training, please download the Penn Tree Bank data first (download from [Tomas Mikolov's webpage](http://www.fit.vutbr.cz/~imikolov/rnnlm/simple-examples.tgz)). The code expects to find at least `ptb.train.txt` and `ptb.valid.txt` in the specified data directory.
