@@ -81,3 +81,10 @@ The following arguments are available:
 `-tb`, `--tensorboard_logging` If provided, training progress is monitored with tensorboard.  
 `-log`, `--logdir` Directory of log files for tensorboard.  
 `-bin`,`--save_model_path` Directory where to store model checkpoints.
+
+## Inference
+For obtaining samples and interpolating between senteces, inference.py can be used.
+```
+python3 inference.py -c $CHECKPOINT -n $NUM_SAMPLES
+```
+
