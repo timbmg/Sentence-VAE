@@ -15,7 +15,7 @@ _Note: This implementation does not support LSTM's at the moment, but RNN's and 
 
 
 ### Performance
-Training was stopped after 3 epochs. The true ELBO was optimized for approximatily 1 epoch. Results are averaged over entire split.
+Training was stopped after 4 epochs. The true ELBO was optimized for approximatily 1 epoch (as can bee see in the graph above). Results are averaged over entire split.
 
 | Split       | NLL   | KL    |
 | ------------|------:| -----:|
