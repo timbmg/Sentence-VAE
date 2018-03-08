@@ -10,7 +10,7 @@ from torch.utils.data import DataLoader
 from collections import OrderedDict, defaultdict
 
 from ptb import PTB
-from utils import to_var, idx2word
+from utils import to_var, idx2word, expierment_name
 from model import SentenceVAE
 
 def main(args):
@@ -50,7 +50,7 @@ def main(args):
     print(model)
 
     if args.tensorboard_logging:
-        writer = SummaryWriter(os.path.join(args.logdir, ts))
+        writer = SummaryWriter(os.path.join(args.logdir, expierment_name(args,ts)))
         writer.add_text("model", str(model))
         writer.add_text("args", str(args))
         writer.add_text("ts", ts)
@@ -128,8 +128,9 @@ def main(args):
                     optimizer.step()
                     step += 1
 
+
                 # bookkeepeing
-                tracker['ELBO'] = torch.cat((tracker['ELBO'], loss.data/batch_size))
+                tracker['ELBO'] = torch.cat((tracker['ELBO'], loss.data))
 
                 if args.tensorboard_logging:
                     writer.add_scalar("%s/ELBO"%split.upper(), loss.data[0], epoch*len(data_loader) + iteration)
@@ -147,13 +148,16 @@ def main(args):
                     tracker['target_sents'] += idx2word(batch['target'].data, i2w=datasets['train'].get_i2w(), pad_idx=datasets['train'].pad_idx)
                     tracker['z'] = torch.cat((tracker['z'], z.data), dim=0)
 
+            print("%s Epoch %02d/%i, Mean ELBO %9.4f"%(split.upper(), epoch, args.epochs, torch.mean(tracker['ELBO'])))
+
             if args.tensorboard_logging:
                 writer.add_scalar("%s-Epoch/ELBO"%split.upper(), torch.mean(tracker['ELBO']), epoch)
 
             # save a dump of all sentences and the encoded latent space
             if split == 'valid':
                 dump = {'target_sents':tracker['target_sents'], 'z':tracker['z'].tolist()}
-                os.makedirs('dumps/'+ts)
+                if not os.path.exists(os.path.join('dumps', ts)):
+                    os.makedirs('dumps/'+ts)
                 with open(os.path.join('dumps/'+ts+'/valid_E%i.json'%epoch), 'w') as dump_file:
                     json.dump(dump,dump_file)
 
@@ -187,7 +191,7 @@ if __name__ == '__main__':
     parser.add_argument('-wd', '--word_dropout', type=float, default=0.5)
 
     parser.add_argument('-af', '--anneal_function', type=str, default='logistic')
-    parser.add_argument('-k', '--k', type=int, default=0.0025)
+    parser.add_argument('-k', '--k', type=float, default=0.0025)
     parser.add_argument('-x0', '--x0', type=int, default=2500)
 
     parser.add_argument('-v','--print_every', type=int, default=50)
