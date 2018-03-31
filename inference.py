@@ -32,7 +32,7 @@ def main(args):
     if not os.path.exists(args.load_checkpoint):
         raise FileNotFoundError(args.load_checkpoint)
 
-    model.load_state_dict(torch.load(args.load_checkpoint, map_location=lambda storage, loc: storage))
+    model.load_state_dict(torch.load(args.load_checkpoint))
     print("Model loaded from %s"%(args.load_checkpoint))
 
     model.eval()
