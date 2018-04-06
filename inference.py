@@ -35,6 +35,9 @@ def main(args):
     model.load_state_dict(torch.load(args.load_checkpoint))
     print("Model loaded from %s"%(args.load_checkpoint))
 
+    if torch.cuda.is_available():
+        model = model.cuda()
+    
     model.eval()
 
     samples, z = model.inference(n=args.num_samples)
