@@ -71,7 +71,8 @@ The following arguments are available:
 `-nl`, `--num_layers`  
 `-bi`, `--bidirectional`  
 `-ls`, `--latent_size`  
-`-wd`, `--word_dropout` Word dropout applied to the input of the Decoder.
+`-wd`, `--word_dropout` Word dropout applied to the input of the Decoder, which means words will be replaced by `<unk>` with a probability of `word_dropout`.  
+`-ed`, `--embedding_dropout` Word embedding dropout applied to the input of the Decoder.
 
 `-af`, `--anneal_function` Either 'logistic' or 'linear'.  
 `-k`, `--k` Steepness of the logistic annealing function.  

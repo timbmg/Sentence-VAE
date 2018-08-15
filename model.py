@@ -5,8 +5,8 @@ from utils import to_var
 
 class SentenceVAE(nn.Module):
 
-    def __init__(self, vocab_size, embedding_size, rnn_type, hidden_size, word_dropout, latent_size,
-                sos_idx, eos_idx, pad_idx, max_sequence_length, num_layers=1, bidirectional=False):
+    def __init__(self, vocab_size, embedding_size, rnn_type, hidden_size, word_dropout, embedding_dropout, latent_size,
+                sos_idx, eos_idx, pad_idx, unk_idx, max_sequence_length, num_layers=1, bidirectional=False):
 
         super().__init__()
         self.tensor = torch.cuda.FloatTensor if torch.cuda.is_available() else torch.Tensor
@@ -15,6 +15,7 @@ class SentenceVAE(nn.Module):
         self.sos_idx = sos_idx
         self.eos_idx = eos_idx
         self.pad_idx = pad_idx
+        self.unk_idx = unk_idx
 
         self.latent_size = latent_size
 
@@ -24,7 +25,8 @@ class SentenceVAE(nn.Module):
         self.hidden_size = hidden_size
 
         self.embedding = nn.Embedding(vocab_size, embedding_size)
-        self.word_dropout = nn.Dropout(p=word_dropout)
+        self.word_dropout_rate = word_dropout
+        self.embedding_dropout = nn.Dropout(p=embedding_dropout)
 
         if rnn_type == 'rnn':
             rnn = nn.RNN
@@ -82,7 +84,14 @@ class SentenceVAE(nn.Module):
             hidden = hidden.unsqueeze(0)
 
         # decoder input
-        input_embedding = self.word_dropout(input_embedding)
+        if self.word_dropout_rate > 0:
+            # randomly replace decoder input with <unk>
+            prob = torch.rand(input_sequence.size())
+            prob[(input_sequence.data - self.sos_idx) * (input_sequence.data - self.pad_idx) == 0] = 1
+            decoder_input_sequence = input_sequence.clone()
+            decoder_input_sequence[prob < self.word_dropout_rate] = self.unk_idx
+            input_embedding = self.embedding(decoder_input_sequence)
+        input_embedding = self.embedding_dropout(input_embedding)
         packed_input = rnn_utils.pack_padded_sequence(input_embedding, sorted_lengths.data.tolist(), batch_first=True)
 
         # decoder forward pass
