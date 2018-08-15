@@ -34,11 +34,13 @@ def main(args):
         sos_idx=datasets['train'].sos_idx,
         eos_idx=datasets['train'].eos_idx,
         pad_idx=datasets['train'].pad_idx,
+        unk_idx=datasets['train'].unk_idx,
         max_sequence_length=args.max_sequence_length,
         embedding_size=args.embedding_size,
         rnn_type=args.rnn_type,
         hidden_size=args.hidden_size,
         word_dropout=args.word_dropout,
+        embedding_dropout=args.embedding_dropout,
         latent_size=args.latent_size,
         num_layers=args.num_layers,
         bidirectional=args.bidirectional
@@ -188,7 +190,8 @@ if __name__ == '__main__':
     parser.add_argument('-nl', '--num_layers', type=int, default=1)
     parser.add_argument('-bi', '--bidirectional', action='store_true')
     parser.add_argument('-ls', '--latent_size', type=int, default=16)
-    parser.add_argument('-wd', '--word_dropout', type=float, default=0.5)
+    parser.add_argument('-wd', '--word_dropout', type=float, default=0)
+    parser.add_argument('-ed', '--embedding_dropout', type=float, default=0.5)
 
     parser.add_argument('-af', '--anneal_function', type=str, default='logistic')
     parser.add_argument('-k', '--k', type=float, default=0.0025)
@@ -206,5 +209,6 @@ if __name__ == '__main__':
 
     assert args.rnn_type in ['rnn', 'lstm', 'gru']
     assert args.anneal_function in ['logistic', 'linear']
+    assert 0 <= args.word_dropout <= 1
 
     main(args)

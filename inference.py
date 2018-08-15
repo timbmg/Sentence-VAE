@@ -19,11 +19,13 @@ def main(args):
         sos_idx=w2i['<sos>'],
         eos_idx=w2i['<eos>'],
         pad_idx=w2i['<pad>'],
+        unk_idx=w2i['<unk>'],
         max_sequence_length=args.max_sequence_length,
         embedding_size=args.embedding_size,
         rnn_type=args.rnn_type,
         hidden_size=args.hidden_size,
         word_dropout=args.word_dropout,
+        embedding_dropout=args.embedding_dropout,
         latent_size=args.latent_size,
         num_layers=args.num_layers,
         bidirectional=args.bidirectional
@@ -63,7 +65,8 @@ if __name__ == '__main__':
     parser.add_argument('-eb', '--embedding_size', type=int, default=300)
     parser.add_argument('-rnn', '--rnn_type', type=str, default='gru')
     parser.add_argument('-hs', '--hidden_size', type=int, default=256)
-    parser.add_argument('-wd', '--word_dropout', type=float, default=0.5)
+    parser.add_argument('-wd', '--word_dropout', type=float, default=0)
+    parser.add_argument('-ed', '--embedding_dropout', type=float, default=0.5)
     parser.add_argument('-ls', '--latent_size', type=int, default=16)
     parser.add_argument('-nl', '--num_layers', type=int, default=1)
     parser.add_argument('-bi', '--bidirectional', action='store_true')
@@ -73,5 +76,6 @@ if __name__ == '__main__':
     args.rnn_type = args.rnn_type.lower()
 
     assert args.rnn_type in ['rnn', 'lstm', 'gru']
+    assert 0 <= args.word_dropout <= 1
 
     main(args)
