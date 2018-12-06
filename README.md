@@ -1,6 +1,6 @@
 # Sentence Variational Autoencoder
 
-PyTorch implementation of [_Generating Sentences from a Continuous Space_](https://arxiv.org/abs/1511.06349) by Bowman et al. 2015.
+PyTorch re-implementation of [_Generating Sentences from a Continuous Space_](https://arxiv.org/abs/1511.06349) by Bowman et al. 2015.
 ![Model Architecture](https://github.com/timbmg/Sentence-VAE/blob/master/figs/model.png "Model Architecture")
 _Note: This implementation does not support LSTM's at the moment, but RNN's and GRU's._
 ## Results
