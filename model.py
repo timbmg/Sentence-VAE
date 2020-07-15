@@ -3,8 +3,8 @@ import torch.nn as nn
 import torch.nn.utils.rnn as rnn_utils
 from utils import to_var
 
-class SentenceVAE(nn.Module):
 
+class SentenceVAE(nn.Module):
     def __init__(self, vocab_size, embedding_size, rnn_type, hidden_size, word_dropout, embedding_dropout, latent_size,
                 sos_idx, eos_idx, pad_idx, unk_idx, max_sequence_length, num_layers=1, bidirectional=False):
 
@@ -37,8 +37,10 @@ class SentenceVAE(nn.Module):
         else:
             raise ValueError()
 
-        self.encoder_rnn = rnn(embedding_size, hidden_size, num_layers=num_layers, bidirectional=self.bidirectional, batch_first=True)
-        self.decoder_rnn = rnn(embedding_size, hidden_size, num_layers=num_layers, bidirectional=self.bidirectional, batch_first=True)
+        self.encoder_rnn = rnn(embedding_size, hidden_size, num_layers=num_layers, bidirectional=self.bidirectional,
+                               batch_first=True)
+        self.decoder_rnn = rnn(embedding_size, hidden_size, num_layers=num_layers, bidirectional=self.bidirectional,
+                               batch_first=True)
 
         self.hidden_factor = (2 if bidirectional else 1) * num_layers
 
@@ -110,9 +112,7 @@ class SentenceVAE(nn.Module):
         logp = nn.functional.log_softmax(self.outputs2vocab(padded_outputs.view(-1, padded_outputs.size(2))), dim=-1)
         logp = logp.view(b, s, self.embedding.num_embeddings)
 
-
         return logp, mean, logv, z
-
 
     def inference(self, n=4, z=None):
 
@@ -131,16 +131,17 @@ class SentenceVAE(nn.Module):
         hidden = hidden.unsqueeze(0)
 
         # required for dynamic stopping of sentence generation
-        sequence_idx = torch.arange(0, batch_size, out=self.tensor()).long() # all idx of batch
-        sequence_running = torch.arange(0, batch_size, out=self.tensor()).long() # all idx of batch which are still generating
-        sequence_mask = torch.ones(batch_size, out=self.tensor()).byte()
-
-        running_seqs = torch.arange(0, batch_size, out=self.tensor()).long() # idx of still generating sequences with respect to current loop
+        sequence_idx = torch.arange(0, batch_size, out=self.tensor()).long()  # all idx of batch
+        # all idx of batch which are still generating
+        sequence_running = torch.arange(0, batch_size, out=self.tensor()).long()
+        sequence_mask = torch.ones(batch_size, out=self.tensor()).bool()
+        # idx of still generating sequences with respect to current loop
+        running_seqs = torch.arange(0, batch_size, out=self.tensor()).long()
 
         generations = self.tensor(batch_size, self.max_sequence_length).fill_(self.pad_idx).long()
 
-        t=0
-        while(t<self.max_sequence_length and len(running_seqs)>0):
+        t = 0
+        while t < self.max_sequence_length and len(running_seqs) > 0:
 
             if t == 0:
                 input_sequence = to_var(torch.Tensor(batch_size).fill_(self.sos_idx).long())
@@ -159,7 +160,7 @@ class SentenceVAE(nn.Module):
             generations = self._save_sample(generations, input_sequence, sequence_running, t)
 
             # update gloabl running sequence
-            sequence_mask[sequence_running] = (input_sequence != self.eos_idx).data
+            sequence_mask[sequence_running] = (input_sequence != self.eos_idx)
             sequence_running = sequence_idx.masked_select(sequence_mask)
 
             # update local running sequences

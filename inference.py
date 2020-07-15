@@ -8,7 +8,6 @@ from utils import to_var, idx2word, interpolate
 
 
 def main(args):
-
     with open(args.data_dir+'/ptb.vocab.json', 'r') as file:
         vocab = json.load(file)
 
@@ -35,7 +34,7 @@ def main(args):
         raise FileNotFoundError(args.load_checkpoint)
 
     model.load_state_dict(torch.load(args.load_checkpoint))
-    print("Model loaded from %s"%(args.load_checkpoint))
+    print("Model loaded from %s" % args.load_checkpoint)
 
     if torch.cuda.is_available():
         model = model.cuda()
@@ -53,8 +52,8 @@ def main(args):
     print('-------INTERPOLATION-------')
     print(*idx2word(samples, i2w=i2w, pad_idx=w2i['<pad>']), sep='\n')
 
-if __name__ == '__main__':
 
+if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-c', '--load_checkpoint', type=str)
