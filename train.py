@@ -29,7 +29,7 @@ def main(args):
             min_occ=args.min_occ
         )
 
-    model = SentenceVAE(
+    params = dict(
         vocab_size=datasets['train'].vocab_size,
         sos_idx=datasets['train'].sos_idx,
         eos_idx=datasets['train'].eos_idx,
@@ -44,7 +44,8 @@ def main(args):
         latent_size=args.latent_size,
         num_layers=args.num_layers,
         bidirectional=args.bidirectional
-        )
+    )
+    model = SentenceVAE(**params)
 
     if torch.cuda.is_available():
         model = model.cuda()
@@ -60,6 +61,9 @@ def main(args):
     save_model_path = os.path.join(args.save_model_path, ts)
     os.makedirs(save_model_path)
 
+    with open(os.path.join(save_model_path, 'model_params.json'), 'w') as f:
+        json.dump(params, f, indent=4)
+
     def kl_anneal_function(anneal_function, step, k, x0):
         if anneal_function == 'logistic':
             return float(1/(1+np.exp(-k*(step-x0))))
@@ -72,7 +76,7 @@ def main(args):
         # cut-off unnecessary padding from target, and flatten
         target = target[:, :torch.max(length).item()].contiguous().view(-1)
         logp = logp.view(-1, logp.size(2))
-        
+
         # Negative Log Likelihood
         NLL_loss = NLL(logp, target)
 
