@@ -182,7 +182,7 @@ class SentenceVAE(nn.Module):
 
         if mode == 'greedy':
             _, sample = torch.topk(dist, 1, dim=-1)
-        sample = sample.squeeze()
+        sample = sample.reshape(-1)
 
         return sample
 
