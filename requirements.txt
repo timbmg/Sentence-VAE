@@ -1,4 +1,4 @@
-numpy~=1.18.5
+numpy>=1.22
 nltk==3.6.6
 torch==1.13.1
 tensorboardX==2.0
