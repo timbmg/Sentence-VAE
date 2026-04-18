@@ -13,6 +13,7 @@ from ptb import PTB
 from utils import to_var, idx2word, expierment_name
 from model import SentenceVAE
 
+# helloc
 
 def main(args):
     ts = time.strftime('%Y-%b-%d-%H:%M:%S', time.gmtime())
